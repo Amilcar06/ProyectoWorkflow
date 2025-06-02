@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Diseñador de Flujo</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/drawflow/dist/drawflow.min.css">
+    <style>
+        html, body { margin: 0; padding: 0; height: 100%; }
+        #drawflow { height: 90vh; border: 1px solid #ccc; }
+        #toolbar { padding: 10px; }
+    </style>
+</head>
+<body>
+
+<div id="toolbar">
+    <button onclick="addNode('Paso')">Agregar Paso</button>
+    <button onclick="guardar()">Guardar Flujo</button>
+</div>
+
+<div id="drawflow" class="drawflow"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/drawflow/dist/drawflow.min.js"></script>
+<script>
+    const editor = new Drawflow(document.getElementById('drawflow'));
+    editor.start();
+
+    function addNode(nombre) {
+        editor.addNode(nombre, 1, 1, 100, 100, nombre, {}, nombre);
+    }
+
+    function guardar() {
+        const data = JSON.stringify(editor.export(), null, 2);
+        fetch('guardar_flujo.php', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: data
+        })
+            .then(res => res.text())
+            .then(msg => alert(msg));
+    }
+</script>
+
+</body>
+</html>
