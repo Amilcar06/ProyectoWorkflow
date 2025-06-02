@@ -1,97 +1,29 @@
-# BPM Project
+# Workflow Project
 
-Sistema de Gestión de Procesos de Negocio (Business Process Management - BPM) desarrollado en PHP, diseñado para permitir la creación visual de formularios y flujos de trabajo (BPMN), ejecución de procesos, asignación de tareas y seguimiento de solicitudes.
+Sistema de Workflow desarrollado en PHP, diseñado para permitir la creación visual de formularios y flujos de trabajo (BPMN), ejecución de procesos, asignación de tareas y seguimiento de solicitudes.
 
 ## 📁 Estructura del Proyecto
 ```
-/bpm-project/
-│
-├── /public/                          # Carpeta pública accesible desde el navegador
-│   ├── index.php                     # Punto de entrada principal
-│   ├── login.php                     # Página de inicio de sesión
-│   ├── register.php                  # Página de registro
-│   ├── dashboard.php                 # Panel principal
-│   ├── /assets/                      # Archivos estáticos
-│   │   ├── /css/
-│   │   │   ├── style.css
-│   │   │   └── bootstrap.min.css
-│   │   ├── /js/
-│   │   │   ├── main.js
-│   │   │   ├── form-designer.js
-│   │   │   └── flow-designer.js
-│   │   └── /img/
-│   │       └── logo.png
-│   ├── /form-designer/              # Interfaz visual FormBuilder
-│   │   └── index.php
-│   └── /flow-designer/              # Interfaz visual BPMN
-│       └── index.php
-│
-├── /app/
-│   ├── /controllers/                # Lógica de backend
-│   │   ├── AuthController.php       # Login, logout, registro
-│   │   ├── UserController.php       # Gestión de usuarios/roles
-│   │   ├── FormController.php       # Crear, editar, ver formularios
-│   │   ├── FlowController.php       # Crear, editar, ver flujos
-│   │   ├── ProcessController.php    # Crear solicitud, iniciar proceso
-│   │   └── ProcessEngine.php        # Motor de ejecución BPMN
-│   │
-│   ├── /models/                     # Modelos conectados a la base de datos
-│   │   ├── User.php
-│   │   ├── Role.php
-│   │   ├── Form.php
-│   │   ├── Flow.php
-│   │   ├── Process.php              # Solicitud
-│   │   ├── Task.php                 # Tarea de usuario
-│   │   └── AuditLog.php             # Auditoría
-│   │
-│   ├── /views/                      # Interfaces de usuario
-│   │   ├── /auth/                   # Login / Registro
-│   │   │   ├── login.php
-│   │   │   └── register.php
-│   │   ├── /user/                   # CRUD de usuarios
-│   │   │   └── list.php
-│   │   ├── /form/                   # Formularios
-│   │   │   ├── list.php
-│   │   │   └── create.php
-│   │   ├── /flow/                   # Flujos BPMN
-│   │   │   ├── list.php
-│   │   │   └── create.php
-│   │   ├── /process/               # Solicitudes
-│   │   │   ├── my_requests.php
-│   │   │   └── inbox.php
-│   │   └── /partials/              # Componentes comunes
-│   │       ├── header.php
-│   │       └── footer.php
-│   │
-│   └── /core/                       # Clases base y utilidades
-│       ├── Database.php             # Conexión PDO
-│       ├── Router.php               # Ruteo básico
-│       ├── Session.php              # Manejo de sesiones
-│       ├── Auth.php                 # Verificación de permisos
-│       └── Helpers.php              # Funciones comunes
-│
-├── /storage/                        # Archivos generados o temporales
-│   ├── forms/                       # Formularios en JSON
-│   ├── flows/                       # Flujos en XML
-│   ├── logs/                        # Logs del motor
-│   └── uploads/                     # Archivos adjuntos (ej. boletas)
-│
-├── /config/                         # Configuración del sistema
-│   ├── db.php                       # Configuración base de datos
-│   └── mail.php                     # Parámetros de envío de correos
-│
-├── /sql/                            # Migraciones y scripts de base de datos
-│   ├── schema.sql                   # Script inicial
-│   └── seed.sql                     # Datos de prueba
-│
-├── /tests/                          # Pruebas unitarias o funcionales
-│   ├── FormTest.php
-│   └── FlowExecutionTest.php
-│
-├── composer.json                    # Dependencias PHP (si usas Composer)
-├── package.json                     # Dependencias JS (si usas npm/yarn)
-├── README.md                        # Documentación principal
-└── .env                             # Variables de entorno (opcional)
+/gestor-wfl/
+├── index.php                   // Página inicial
+├── motor.php                   // Motor que lee el flujo y decide el siguiente paso
+├── reglas.php                  // Evaluador de reglas de negocio
+├── pasos.php                   // Controlador centralizado para cada paso del flujo
+├── bandeja.php                 // Muestra tareas pendientes del usuario
+├── diseñador_formulario.html   // Interfaz drag & drop para crear formularios
+├── diseñador_flujo.html        // Interfaz gráfica para crear flujos con nodos
+├── flujo.json                  // Definición del flujo en formato JSON
+├── formularios.json            // Formularios creados con el diseñador
+├── conexion.php                // Conexión a la base de datos
+├── utils.php                   // Funciones comunes
+├── formbuilder.min.js          // Biblioteca para diseño de formularios
+├── jsplumb.min.js              // Biblioteca para diseño gráfico de flujos
+└── estilos.css                 // Estilos personalizados
+
+// Archivos que puedes crear luego, según el número de pasos del flujo
+├── paso_solicitud.php          // Vista y lógica de un paso del flujo
+├── paso_aprobacion.php         // Otro paso
+├── paso_ejecucion.php          // Otro paso más
 ```
 --- 
 
@@ -123,15 +55,15 @@ Sistema de Gestión de Procesos de Negocio (Business Process Management - BPM) d
 ### 1. Clonar el repositorio
 
 ```bash
-git clone https://github.com/tu_usuario/bpm-project.git
-cd bpm-project
+git clone https://github.com/Amilcar06/ProyectoWorkflow.git
+cd gestor-wfl
 ```
 
 ### 2. Configurar la base de datos
 Crear una base de datos en MySQL:
 
 ```sql
-CREATE DATABASE bpm_project CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+CREATE DATABASE IF NOT EXISTS workflow_db DEFAULT CHARACTER SET utf8mb4;
 ```
 Importar el esquema desde `/sql/schema.sql` y datos de ejemplo desde `/sql/seed.sql`.
 
@@ -139,7 +71,7 @@ Importar el esquema desde `/sql/schema.sql` y datos de ejemplo desde `/sql/seed.
 
 ```
 DB_HOST=localhost
-DB_NAME=bpm_project
+DB_NAME=workflow_db
 DB_USER=root
 DB_PASS=tu_contraseña
 ```
@@ -162,26 +94,6 @@ Configurar el documento raíz en `/public` para apuntar a `index.php`.
   - Solicitudes: Iniciar procesos desde formularios asignados
   - Tareas: Visualización en bandeja de entrada `/process/inbox.php`
   - Seguimiento: Revisión de solicitudes enviadas en `/process/my_requests.php`
-
----
-
-## 🧪 Pruebas
-Las pruebas unitarias están en el directorio `/tests/`.
-
-Ejecuta pruebas con PHPUnit si está configurado
-
-```bash
-./vendor/bin/phpunit tests/
-```
-
----
-
-## 📦 Herramientas y Librerías Recomendadas
-
-- **FormBuilder** para diseño de formularios
-- **bpmn-js** para edición de procesos BPMN
-- **Bootstrap** para interfaz responsiva
-- **jQuery** y **JavaScript** para la interacción
 
 ---
 
