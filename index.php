@@ -15,8 +15,6 @@ if (!isset($_SESSION['usuario'])) {
 </head>
 <body class="bg-gray-100 min-h-screen">
 
-<?php include("header.php"); ?>
-
 <div class="max-w-3xl mx-auto mt-10 p-6 bg-white rounded-lg shadow-lg">
     <h2 class="text-2xl font-bold text-blue-700 mb-4">👋 Bienvenido</h2>
     <p class="text-gray-700 mb-6">
