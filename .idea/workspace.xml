@@ -5,30 +5,19 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="eb5bbf29-f6b2-489c-9852-49b13b91c4d4" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/inc/vacaciones/aprobar_solicitud.inc.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/inc/vacaciones/rechazar_solicitud.inc.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/inc/vacaciones/registrar_vacaciones.inc.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/inc/vacaciones/revisar_solicitud.inc.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/inc/vacaciones/solicitar_vacaciones.inc.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/inc/vacaciones/rechazado.inc.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/auth.php" beforeDir="false" afterPath="$PROJECT_DIR$/auth.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/bandeja/entrada.php" beforeDir="false" afterPath="$PROJECT_DIR$/bandeja/entrada.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bandeja/historial.php" beforeDir="false" afterPath="$PROJECT_DIR$/bandeja/historial.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/bandeja/salida.php" beforeDir="false" afterPath="$PROJECT_DIR$/bandeja/salida.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/conexion.inc.php" beforeDir="false" afterPath="$PROJECT_DIR$/conexion.inc.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/controlador.php" beforeDir="false" afterPath="$PROJECT_DIR$/controlador.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/inc/ejecutar.inc.php" beforeDir="false" afterPath="$PROJECT_DIR$/inc/mantenimiento/ejecutar.inc.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/inc/finalizar.inc.php" beforeDir="false" afterPath="$PROJECT_DIR$/inc/mantenimiento/finalizar.inc.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/inc/nuevosolicitud.inc.php" beforeDir="false" afterPath="$PROJECT_DIR$/inc/mantenimiento/nuevosolicitud.inc.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/inc/rechazado.inc.php" beforeDir="false" afterPath="$PROJECT_DIR$/inc/mantenimiento/rechazado.inc.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/inc/revision.inc.php" beforeDir="false" afterPath="$PROJECT_DIR$/inc/mantenimiento/revision.inc.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/inc/ubicacion.inc.php" beforeDir="false" afterPath="$PROJECT_DIR$/inc/mantenimiento/ubicacion.inc.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/inc/vacaciones/aprobar_solicitud.inc.php" beforeDir="false" afterPath="$PROJECT_DIR$/inc/vacaciones/aprobar_solicitud.inc.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/inc/vacaciones/rechazar_solicitud.inc.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/inc/vacaciones/revisar_solicitud.inc.php" beforeDir="false" afterPath="$PROJECT_DIR$/inc/vacaciones/revisar_solicitud.inc.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/index.php" beforeDir="false" afterPath="$PROJECT_DIR$/index.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/inicial.php" beforeDir="false" afterPath="$PROJECT_DIR$/inicial.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/login.php" beforeDir="false" afterPath="$PROJECT_DIR$/login.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/nuevo_ticket.php" beforeDir="false" afterPath="$PROJECT_DIR$/nuevo_ticket.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/sql/datos_prueba.sql" beforeDir="false" afterPath="$PROJECT_DIR$/sql/datos_prueba.sql" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sql/estructura.sql" beforeDir="false" afterPath="$PROJECT_DIR$/sql/estructura.sql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/utils/header.php" beforeDir="false" afterPath="$PROJECT_DIR$/utils/header.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -121,7 +110,7 @@
       <workItem from="1749996031327" duration="2000" />
       <workItem from="1749996043930" duration="2879000" />
       <workItem from="1750002413422" duration="245000" />
-      <workItem from="1750014206164" duration="9943000" />
+      <workItem from="1750014206164" duration="15547000" />
     </task>
     <servers />
   </component>

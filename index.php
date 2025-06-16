@@ -7,7 +7,6 @@ if (!isset($_SESSION['usuario'])) {
 $usuario = $_SESSION['usuario'];
 $rol = $_SESSION['rol'] ?? '';
 ?>
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -15,41 +14,45 @@ $rol = $_SESSION['rol'] ?? '';
     <title>Inicio - Sistema de Mantenimiento</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-gray-100 min-h-screen">
+<body class="bg-gradient-to-br from-blue-50 to-blue-100 min-h-screen flex items-center justify-center font-sans">
 
-<div class="max-w-3xl mx-auto mt-10 p-6 bg-white rounded-lg shadow-lg">
-    <h2 class="text-2xl font-bold text-blue-700 mb-4">👋 Bienvenido</h2>
-    <p class="text-gray-700 mb-6">
-        Usuario: <strong class="text-blue-600"><?= htmlspecialchars($usuario) ?></strong><br>
-        Rol: <strong class="text-purple-600"><?= htmlspecialchars($rol) ?></strong>
-    </p>
+<div class="bg-white shadow-2xl rounded-3xl p-10 max-w-3xl w-full">
+    <div class="mb-6 text-center">
+        <h1 class="text-3xl font-bold text-blue-700 mb-1">👋 Bienvenido, <span class="text-blue-900"><?= htmlspecialchars($usuario) ?></span></h1>
+        <p class="text-gray-600">Rol asignado: <span class="font-medium text-purple-600"><?= htmlspecialchars($rol) ?></span></p>
+    </div>
 
-    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 gap-4">
-        <?php if ($rol === 'encargado'): ?>
+    <div class="grid sm:grid-cols-2 md:grid-cols-3 gap-5 mt-8 text-center">
+        <?php if ($rol === 'empleado'): ?>
             <a href="nuevo_ticket.php?flujo=F2"
-               class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded shadow transition">
-                ➕ Nueva Solicitud
+               class="group block bg-blue-600 hover:bg-blue-700 text-white rounded-xl px-5 py-4 shadow-md transition-transform hover:-translate-y-1">
+                <div class="text-xl mb-1">🛠️</div>
+                <div class="font-semibold">Solicitar Mantenimiento</div>
             </a>
-        <?php elseif ($rol === 'empleado'): ?>
+
             <a href="nuevo_ticket.php?flujo=F3"
-               class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded shadow transition">
-                ➕ Nueva Solicitud
+               class="group block bg-cyan-600 hover:bg-cyan-700 text-white rounded-xl px-5 py-4 shadow-md transition-transform hover:-translate-y-1">
+                <div class="text-xl mb-1">🏖️</div>
+                <div class="font-semibold">Solicitar Vacación</div>
             </a>
         <?php endif; ?>
 
         <a href="bandeja/entrada.php"
-           class="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded shadow transition">
-            📥 Bandeja de Entrada
+           class="group block bg-green-600 hover:bg-green-700 text-white rounded-xl px-5 py-4 shadow-md transition-transform hover:-translate-y-1">
+            <div class="text-xl mb-1">📥</div>
+            <div class="font-semibold">Bandeja de Entrada</div>
         </a>
 
         <a href="bandeja/salida.php"
-           class="bg-gray-600 hover:bg-gray-700 text-white font-semibold py-2 px-4 rounded shadow transition">
-            📤 Bandeja de Salida
+           class="group block bg-gray-700 hover:bg-gray-800 text-white rounded-xl px-5 py-4 shadow-md transition-transform hover:-translate-y-1">
+            <div class="text-xl mb-1">📤</div>
+            <div class="font-semibold">Bandeja de Salida</div>
         </a>
 
         <a href="logout.php"
-           class="bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded shadow transition">
-            🚪 Cerrar Sesión
+           class="group block bg-red-600 hover:bg-red-700 text-white rounded-xl px-5 py-4 shadow-md transition-transform hover:-translate-y-1 col-span-full sm:col-span-2 md:col-span-1">
+            <div class="text-xl mb-1">🚪</div>
+            <div class="font-semibold">Cerrar Sesión</div>
         </a>
     </div>
 </div>

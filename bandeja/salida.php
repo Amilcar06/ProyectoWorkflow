@@ -34,7 +34,7 @@ $rol = mysqli_fetch_assoc($res)["rol"];
     </h2>
 
     <?php
-    if ($rol === 'supervisor') {
+    if ($rol === 'supervisor' || $rol === 'empleado') {
         // Mostrar mantenimiento
         $consulta_mantenimiento = "
             SELECT DISTINCT fs.nrotramite, s.descripcion, s.estado, MAX(fs.fecha_fin) AS ultima_accion
@@ -44,7 +44,7 @@ $rol = mysqli_fetch_assoc($res)["rol"];
               AND fs.fecha_fin IS NOT NULL
               AND s.estado = 'finalizado'
             GROUP BY fs.nrotramite, s.descripcion, s.estado
-            ORDER BY ultima_accion DESC
+            ORDER BY fs.nrotramite DESC
         ";
 
         // Mostrar vacaciones
@@ -56,7 +56,7 @@ $rol = mysqli_fetch_assoc($res)["rol"];
               AND fs.fecha_fin IS NOT NULL
               AND s.estado = 'finalizado'
             GROUP BY fs.nrotramite, s.estado
-            ORDER BY ultima_accion DESC
+            ORDER BY fs.nrotramite DESC
         ";
 
         echo "<h3 class='text-xl font-semibold mt-8 mb-2 text-gray-700'>🛠️ Solicitudes de Mantenimiento Finalizadas</h3>";
@@ -65,7 +65,7 @@ $rol = mysqli_fetch_assoc($res)["rol"];
         echo "<h3 class='text-xl font-semibold mt-12 mb-2 text-gray-700'>🌴 Solicitudes de Vacaciones Finalizadas</h3>";
         mostrarTabla($conexion, $consulta_vacaciones);
 
-    } elseif (in_array($rol, ['encargado', 'supervisor', 'tecnico'])) {
+    } elseif ($rol === 'tecnico') {
         $consulta = "
             SELECT DISTINCT fs.nrotramite, s.descripcion, s.estado, MAX(fs.fecha_fin) AS ultima_accion
             FROM flujoseguimiento fs
@@ -74,11 +74,11 @@ $rol = mysqli_fetch_assoc($res)["rol"];
               AND fs.fecha_fin IS NOT NULL
               AND s.estado = 'finalizado'
             GROUP BY fs.nrotramite, s.descripcion, s.estado
-            ORDER BY ultima_accion DESC
+            ORDER BY fs.nrotramite DESC
         ";
         mostrarTabla($conexion, $consulta);
 
-    } elseif (in_array($rol, ['empleado', 'rrhh'])) {
+    } elseif ($rol ==='rrhh') {
         $consulta = "
             SELECT DISTINCT fs.nrotramite, s.motivo AS descripcion, s.estado, MAX(fs.fecha_fin) AS ultima_accion
             FROM flujoseguimiento fs
@@ -87,7 +87,7 @@ $rol = mysqli_fetch_assoc($res)["rol"];
               AND fs.fecha_fin IS NOT NULL
               AND s.estado = 'finalizado'
             GROUP BY fs.nrotramite, s.estado
-            ORDER BY ultima_accion DESC
+            ORDER BY fs.nrotramite DESC
         ";
         mostrarTabla($conexion, $consulta);
 

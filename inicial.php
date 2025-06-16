@@ -34,8 +34,7 @@ $pantalla = $datos["pantalla"] ?? null;
 
 // 5. Validar acceso por rol
 if ($rolUsuario !== $rolProceso) {
-    echo "<h3>🚫 Acceso denegado: este paso del flujo requiere el rol <b>$rolProceso</b>.</h3>";
-    echo "<p><a href='bandeja/entrada.php'>🔙 Volver a la bandeja</a></p>";
+    header("Location: acceso_denegado.php");
     exit;
 }
 
