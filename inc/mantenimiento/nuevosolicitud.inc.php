@@ -1,11 +1,13 @@
 <?php
+include "conexion.inc.php";
+
 session_start();
 if (!isset($_SESSION['usuario'])) {
     header("Location: ../login.php");
     exit();
 }
 
-$ticket = $_GET["ticket"];
+$nrotramite = $_GET["nrotramite"];
 $flujo = $_GET["flujo"];
 $proceso = $_GET["proceso"];
 $usuario = $_SESSION["usuario"];
@@ -26,7 +28,7 @@ $usuario = $_SESSION["usuario"];
     <form action="controlador.php" method="post" class="space-y-4">
         <input type="hidden" name="flujo" value="<?= $flujo ?>">
         <input type="hidden" name="proceso" value="<?= $proceso ?>">
-        <input type="hidden" name="ticket" value="<?= $ticket ?>">
+        <input type="hidden" name="nrotramite" value="<?= $nrotramite ?>">
         <input type="hidden" name="usuario" value="<?= $usuario ?>">
 
         <div>

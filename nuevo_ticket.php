@@ -2,28 +2,41 @@
 session_start();
 include "conexion.inc.php";
 
-// Verificar usuario logueado
 $usuario = $_SESSION["usuario"] ?? null;
 if (!$usuario) {
-    header("Location: ../login.php");
+    header("Location: login.php");
     exit;
 }
 
-// Generar nuevo número de ticket (puedes usar MAX o AUTO_INCREMENT de solicitudes)
-$result = mysqli_query($conexion, "SELECT MAX(ticket) AS maxticket FROM flujousuario");
-$row = mysqli_fetch_assoc($result);
-$nuevo_ticket = $row['maxticket'] + 1;
+$flujo = $_GET["flujo"] ?? null;
+if (!$flujo) {
+    die("❌ Error: flujo no especificado.");
+}
 
-// Insertar primera entrada del flujo
-$flujo = 'F2';
+// 1. Obtener nuevo número de trámite
+$result = mysqli_query($conexion, "SELECT MAX(nrotramite) AS maxnrotramite FROM flujoseguimiento");
+$row = mysqli_fetch_assoc($result);
+$nuevo_nrotramite = ($row['maxnrotramite'] ?? 0) + 1;
+
+// 2. Ejecutar lógica personalizada del flujo si existe
+$flujoFile = "flujos/$flujo.php";
+if (file_exists($flujoFile)) {
+    include $flujoFile;  // este archivo puede usar $nuevo_nrotramite y $usuario
+}
+
+// 3. Insertar en flujoseguimiento
 $proceso = 'P1';
 $fecha = date("Y-m-d H:i:s");
 
-$sql = "INSERT INTO flujousuario (ticket, usuario, flujo, proceso, fechainicial, fechafinal)
-        VALUES ('$nuevo_ticket', '$usuario', '$flujo', '$proceso', '$fecha', NULL)";
-mysqli_query($conexion, $sql);
+$sql_flujo = "
+    INSERT INTO flujoseguimiento (nrotramite, flujo, proceso, usuario, fecha_inicio, fecha_fin)
+    VALUES ('$nuevo_nrotramite', '$flujo', '$proceso', '$usuario', '$fecha', NULL)
+";
+if (!mysqli_query($conexion, $sql_flujo)) {
+    die("❌ Error al iniciar seguimiento del flujo: " . mysqli_error($conexion));
+}
 
-// Redirigir al usuario al inicio del flujo
-header("Location: inicial.php?flujo=$flujo&proceso=$proceso&ticket=$nuevo_ticket");
+// 4. Redirigir al inicio del flujo
+header("Location: inicial.php?flujo=$flujo&proceso=$proceso&nrotramite=$nuevo_nrotramite");
 exit;
 ?>

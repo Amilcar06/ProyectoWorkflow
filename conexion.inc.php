@@ -2,7 +2,7 @@
 $host = 'localhost';
 $usuario = 'root';        // Cambia esto si usas otro usuario
 $password = '';           // Cambia esto si tienes contraseña
-$base_datos = 'mantenimiento';  // Cambia por el nombre de tu base de datos
+$base_datos = 'mantenimiento3';  // Cambia por el nombre de tu base de datos
 
 $conexion = new mysqli($host, $usuario, $password, $base_datos);
 

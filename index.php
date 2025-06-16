@@ -4,6 +4,8 @@ if (!isset($_SESSION['usuario'])) {
     header("Location: login.php");
     exit();
 }
+$usuario = $_SESSION['usuario'];
+$rol = $_SESSION['rol'] ?? '';
 ?>
 
 <!DOCTYPE html>
@@ -18,15 +20,22 @@ if (!isset($_SESSION['usuario'])) {
 <div class="max-w-3xl mx-auto mt-10 p-6 bg-white rounded-lg shadow-lg">
     <h2 class="text-2xl font-bold text-blue-700 mb-4">👋 Bienvenido</h2>
     <p class="text-gray-700 mb-6">
-        Usuario: <strong class="text-blue-600"><?php echo $_SESSION['usuario']; ?></strong><br>
-        Rol: <strong class="text-purple-600"><?php echo $_SESSION['rol']; ?></strong>
+        Usuario: <strong class="text-blue-600"><?= htmlspecialchars($usuario) ?></strong><br>
+        Rol: <strong class="text-purple-600"><?= htmlspecialchars($rol) ?></strong>
     </p>
 
     <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 gap-4">
-        <a href="nuevo_ticket.php"
-           class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded shadow transition">
-            ➕ Nueva Solicitud
-        </a>
+        <?php if ($rol === 'encargado'): ?>
+            <a href="nuevo_ticket.php?flujo=F2"
+               class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded shadow transition">
+                ➕ Nueva Solicitud
+            </a>
+        <?php elseif ($rol === 'empleado'): ?>
+            <a href="nuevo_ticket.php?flujo=F3"
+               class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded shadow transition">
+                ➕ Nueva Solicitud
+            </a>
+        <?php endif; ?>
 
         <a href="bandeja/entrada.php"
            class="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded shadow transition">

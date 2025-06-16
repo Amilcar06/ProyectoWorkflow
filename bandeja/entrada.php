@@ -35,12 +35,12 @@ $rol = mysqli_fetch_assoc($res)["rol"];
     <?php
     // Obtener tickets pendientes del usuario
     $sql = "
-        SELECT f.ticket, f.proceso, f.flujo
-        FROM flujousuario f
-        WHERE f.usuario = '$usuario'
-        AND f.fechafinal IS NULL
-        ORDER BY f.ticket;
-        ";
+        SELECT fs.nrotramite, fs.proceso, fs.flujo
+        FROM flujoseguimiento fs
+        WHERE fs.usuario = '$usuario'
+          AND fs.fecha_fin IS NULL
+        ORDER BY fs.nrotramite;
+    ";
     $res = mysqli_query($conexion, $sql);
 
     if (mysqli_num_rows($res) > 0): ?>
@@ -57,13 +57,13 @@ $rol = mysqli_fetch_assoc($res)["rol"];
                 <?php while ($fila = mysqli_fetch_array($res)):
                     $flujo = $fila['flujo'];
                     $proceso = $fila['proceso'];
-                    $ticket = $fila['ticket'];
+                    $nrotramite = $fila['nrotramite'];
                     ?>
                     <tr class="border-b hover:bg-indigo-50">
-                        <td class="py-3 px-6 font-medium text-gray-800"><?php echo $ticket; ?></td>
+                        <td class="py-3 px-6 font-medium text-gray-800"><?php echo $nrotramite; ?></td>
                         <td class="py-3 px-6 text-gray-700"><?php echo $proceso; ?></td>
                         <td class="py-3 px-6">
-                            <a href="../inicial.php?flujo=<?php echo $flujo; ?>&proceso=<?php echo $proceso; ?>&ticket=<?php echo $ticket; ?>"
+                            <a href="../inicial.php?flujo=<?php echo $flujo; ?>&proceso=<?php echo $proceso; ?>&nrotramite=<?php echo $nrotramite; ?>"
                                class="inline-flex items-center gap-2 text-indigo-600 hover:text-indigo-800 font-semibold transition">
                                 <i class="fas fa-arrow-right"></i> Ir al formulario
                             </a>
@@ -78,14 +78,6 @@ $rol = mysqli_fetch_assoc($res)["rol"];
             <span>📭</span> No tienes procesos pendientes en este momento.
         </p>
     <?php endif; ?>
-
-    <div class="mt-10 text-center">
-        <form action="../nuevo_ticket.php" method="post">
-            <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-6 rounded shadow transition">
-                ➕ Nueva Solicitud de Mantenimiento
-            </button>
-        </form>
-    </div>
 </main>
 
 </body>

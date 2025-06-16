@@ -12,20 +12,6 @@ if (isset($_SESSION['usuario'])) {
     <title>Login - Mantenimiento</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <style>
-        /* Puedes personalizar Tailwind aquí */
-        tailwind.config = {
-            theme: {
-            extend: {
-            colors: {
-            primary: '#1d4ed8',    // azul fuerte
-            accent: '#facc15',     // amarillo intenso
-            bgLight: '#f1f5f9',     // gris claro
-        }
-        }
-        }
-        }
-    </style>
 </head>
 <body class="bg-bgLight min-h-screen flex items-center justify-center">
 
@@ -40,8 +26,8 @@ if (isset($_SESSION['usuario'])) {
         </div>
 
         <div>
-            <label class="block text-sm font-semibold text-gray-700">Rol (solo para demo):</label>
-            <input type="text" name="rol" required
+            <label class="block text-sm font-semibold text-gray-700">Contraseña:</label>
+            <input type="text" name="contrasena" required
                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary">
         </div>
 

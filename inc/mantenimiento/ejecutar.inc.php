@@ -1,19 +1,19 @@
 <?php
+include "conexion.inc.php";
+
 session_start();
 if (!isset($_SESSION['usuario'])) {
     header("Location: ../login.php");
     exit();
 }
 
-$ticket = $_GET["ticket"];
+$nrotramite = $_GET["nrotramite"];
 $flujo = $_GET["flujo"];
 $proceso = $_GET["proceso"];
 $usuario = $_SESSION["usuario"];
 
-include "conexion.inc.php";
-
 // Obtener los datos de la solicitud
-$sql = "SELECT * FROM solicitudes WHERE ticket = $ticket";
+$sql = "SELECT * FROM solicitudes_mantenimiento WHERE nrotramite = $nrotramite";
 $res = mysqli_query($conexion, $sql);
 $fila = mysqli_fetch_array($res);
 ?>
@@ -22,34 +22,36 @@ $fila = mysqli_fetch_array($res);
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Revisión de Solicitud</title>
+    <title>Ejecución de Solicitud</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-100 min-h-screen flex items-center justify-center">
 <div class="w-full max-w-2xl bg-white p-6 rounded-lg shadow-lg">
-    <h2 class="text-2xl font-bold text-indigo-600 mb-6">🛠 Revisión de Solicitud de Mantenimiento</h2>
+
+    <h2 class="text-2xl font-bold text-indigo-600 mb-6">🔧 Ejecución de la Solicitud</h2>
 
     <div class="mb-6 space-y-2 text-gray-700">
         <p><strong>📝 Descripción:</strong> <?= htmlspecialchars($fila["descripcion"]) ?></p>
-        <p><strong>📍 Piso:</strong> <?= htmlspecialchars($fila["piso"]) ?></p>
+        <p><strong>📍 Ubicación:</strong> <?= htmlspecialchars($fila["piso"]) ?></p>
         <p><strong>🔧 Tipo de Reparación:</strong> <?= htmlspecialchars($fila["tipo_reparacion"]) ?></p>
     </div>
 
-    <form action="controlador.php" method="post" class="space-y-4">
+    <form action="controlador.php" method="post" class="space-y-5">
         <input type="hidden" name="flujo" value="<?= $flujo ?>">
         <input type="hidden" name="proceso" value="<?= $proceso ?>">
-        <input type="hidden" name="ticket" value="<?= $ticket ?>">
+        <input type="hidden" name="nrotramite" value="<?= $nrotramite ?>">
         <input type="hidden" name="usuario" value="<?= $usuario ?>">
 
-        <div class="flex justify-end gap-4">
-            <button type="submit" name="accion" value="Rechazar"
-                    class="bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded shadow">
-                ❌ Rechazar
-            </button>
+        <div>
+            <label for="observaciones" class="block text-sm font-medium text-gray-700 mb-1">🗒️ Observaciones del técnico:</label>
+            <textarea name="observaciones" id="observaciones" rows="5" required
+                      class="w-full border border-gray-300 rounded px-3 py-2 resize-none focus:outline-none focus:ring focus:ring-indigo-200 focus:border-indigo-500"></textarea>
+        </div>
 
-            <button type="submit" name="accion" value="Aprobar"
+        <div class="flex justify-end">
+            <button type="submit" name="accion" value="Siguiente"
                     class="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded shadow">
-                ✅ Aprobar
+                ✅ Marcar como ejecutado
             </button>
         </div>
     </form>

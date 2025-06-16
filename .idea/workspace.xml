@@ -5,8 +5,30 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="eb5bbf29-f6b2-489c-9852-49b13b91c4d4" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/inc/vacaciones/aprobar_solicitud.inc.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/inc/vacaciones/rechazar_solicitud.inc.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/inc/vacaciones/registrar_vacaciones.inc.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/inc/vacaciones/revisar_solicitud.inc.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/inc/vacaciones/solicitar_vacaciones.inc.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/auth.php" beforeDir="false" afterPath="$PROJECT_DIR$/auth.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bandeja/entrada.php" beforeDir="false" afterPath="$PROJECT_DIR$/bandeja/entrada.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bandeja/historial.php" beforeDir="false" afterPath="$PROJECT_DIR$/bandeja/historial.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bandeja/salida.php" beforeDir="false" afterPath="$PROJECT_DIR$/bandeja/salida.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/conexion.inc.php" beforeDir="false" afterPath="$PROJECT_DIR$/conexion.inc.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/controlador.php" beforeDir="false" afterPath="$PROJECT_DIR$/controlador.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/inc/ejecutar.inc.php" beforeDir="false" afterPath="$PROJECT_DIR$/inc/mantenimiento/ejecutar.inc.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/inc/finalizar.inc.php" beforeDir="false" afterPath="$PROJECT_DIR$/inc/mantenimiento/finalizar.inc.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/inc/nuevosolicitud.inc.php" beforeDir="false" afterPath="$PROJECT_DIR$/inc/mantenimiento/nuevosolicitud.inc.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/inc/rechazado.inc.php" beforeDir="false" afterPath="$PROJECT_DIR$/inc/mantenimiento/rechazado.inc.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/inc/revision.inc.php" beforeDir="false" afterPath="$PROJECT_DIR$/inc/mantenimiento/revision.inc.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/inc/ubicacion.inc.php" beforeDir="false" afterPath="$PROJECT_DIR$/inc/mantenimiento/ubicacion.inc.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/index.php" beforeDir="false" afterPath="$PROJECT_DIR$/index.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/inicial.php" beforeDir="false" afterPath="$PROJECT_DIR$/inicial.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/login.php" beforeDir="false" afterPath="$PROJECT_DIR$/login.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/nuevo_ticket.php" beforeDir="false" afterPath="$PROJECT_DIR$/nuevo_ticket.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sql/datos_prueba.sql" beforeDir="false" afterPath="$PROJECT_DIR$/sql/datos_prueba.sql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sql/estructura.sql" beforeDir="false" afterPath="$PROJECT_DIR$/sql/estructura.sql" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -19,7 +41,7 @@
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="main" />
+        <entry key="$PROJECT_DIR$" value="mantenimientov2" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -45,24 +67,30 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;dart.analysis.tool.window.visible&quot;: &quot;false&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;mantenimiento&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/Applications/XAMPP/xamppfiles/htdocs/mantenimiento&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "dart.analysis.tool.window.visible": "false",
+    "git-widget-placeholder": "workflow__unido",
+    "last_opened_file_path": "/Applications/XAMPP/xamppfiles/htdocs/mantenimiento/inc/vacaciones",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/inc/vacaciones" />
+    </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/inc/mantenimiento" />
+      <recent name="$PROJECT_DIR$/inc" />
+      <recent name="$PROJECT_DIR$/inc/vacaciones" />
       <recent name="$PROJECT_DIR$/utils" />
       <recent name="$PROJECT_DIR$" />
     </key>
@@ -83,11 +111,32 @@
       <option name="presentableId" value="Default" />
       <updated>1749746480780</updated>
       <workItem from="1749746484002" duration="7556000" />
-      <workItem from="1749758178649" duration="529000" />
+      <workItem from="1749758178649" duration="956000" />
+      <workItem from="1749787889767" duration="4732000" />
+      <workItem from="1749835682168" duration="52000" />
+      <workItem from="1749930002387" duration="532000" />
+      <workItem from="1749933156178" duration="1438000" />
+      <workItem from="1749938500099" duration="162000" />
+      <workItem from="1749988205705" duration="3900000" />
+      <workItem from="1749996031327" duration="2000" />
+      <workItem from="1749996043930" duration="2879000" />
+      <workItem from="1750002413422" duration="245000" />
+      <workItem from="1750014206164" duration="9943000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
   </component>
 </project>

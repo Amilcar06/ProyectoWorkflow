@@ -1,5 +1,8 @@
 <?php
+ini_set('display_errors', 1);
+error_reporting(E_ALL);
 session_start();
+
 if (!isset($_SESSION['usuario'])) {
     header("Location: login.php");
     exit();
@@ -7,157 +10,178 @@ if (!isset($_SESSION['usuario'])) {
 
 include "conexion.inc.php";
 
-if (isset($_GET['nuevo']) && $_GET['nuevo'] === 'si') {
-    $flujo = $_GET['flujo'] ?? 'F1';
-    $usuario = $_SESSION['usuario'];
-    $fecha = date("Y-m-d H:i:s");
-
-    // Generar ticket único (puedes mejorar esto según tu lógica)
-    $ticket = time(); // o usar AUTO_INCREMENT si ticket es PK
-
-    // Insertar el primer paso del flujo
-    $sql = "INSERT INTO flujousuario (ticket, usuario, flujo, proceso, fechainicial, fechafinal)
-            VALUES ($ticket, '$usuario', '$flujo', 'P1', '$fecha', NULL)";
-    mysqli_query($conexion, $sql);
-
-    header("Location: inicial.php?flujo=$flujo&proceso=P1&ticket=$ticket");
-    exit();
+// Utilidades generales
+function getCampo($conexion, $sql, $campo) {
+    $res = mysqli_query($conexion, $sql);
+    $row = mysqli_fetch_assoc($res);
+    return $row[$campo] ?? null;
 }
 
-// Datos enviados por POST
-$flujo = $_POST["flujo"] ?? '';
-$proceso = $_POST["proceso"] ?? '';
-$ticket = intval($_POST["ticket"] ?? 0);
-$usuario = $_SESSION["usuario"] ?? '';
-$accion = $_POST["accion"] ?? '';
-$fecha = date("Y-m-d H:i:s");
-
-// Validación básica
-if (empty($flujo) || empty($proceso) || empty($usuario) || $ticket <= 0) {
-    die("Error: Datos incompletos.");
-}
-
-// Obtener el rol del usuario logueado
-$sql_rol_user = "SELECT rol FROM usuarios WHERE usuario = '$usuario'";
-$res_rol_user = mysqli_query($conexion, $sql_rol_user);
-$datos_user = mysqli_fetch_assoc($res_rol_user);
-$rol_usuario = $datos_user["rol"] ?? null;
-
-// Obtener el rol requerido para el proceso actual
-$sql_rol_proceso = "SELECT rol FROM flujoproceso 
-                    WHERE flujo = '$flujo' AND proceso = '$proceso'";
-$res_rol_proceso = mysqli_query($conexion, $sql_rol_proceso);
-$datos_proceso = mysqli_fetch_assoc($res_rol_proceso);
-$rol_proceso = $datos_proceso["rol"] ?? null;
-
-if (!$rol_usuario || !$rol_proceso || $rol_usuario !== $rol_proceso) {
-    die("🚫 Acceso denegado: El proceso '$proceso' requiere el rol '$rol_proceso'.");
-}
-
-// Finalizar proceso actual
-$sql_update = "UPDATE flujousuario 
-               SET fechafinal = '$fecha' 
-               WHERE flujo = '$flujo' AND proceso = '$proceso' 
-               AND ticket = $ticket AND fechafinal IS NULL";
-mysqli_query($conexion, $sql_update);
-
-// Obtener el siguiente proceso por defecto
-$sql = "SELECT siguiente FROM flujoproceso 
-        WHERE flujo = '$flujo' AND proceso = '$proceso'";
-$resultado = mysqli_query($conexion, $sql);
-$fila = mysqli_fetch_array($resultado);
-$siguiente = $fila["siguiente"] ?? null;
-
-// === GUARDAR DATOS ESPECÍFICOS POR PROCESO ===
-
-// === P1: Ingreso de solicitud ===
-if ($proceso === "P1" && $accion === "Siguiente") {
-    $descripcion = mysqli_real_escape_string($conexion, $_POST["descripcion"] ?? '');
-
-    $sql_insert = "INSERT INTO solicitudes (ticket, descripcion, estado) 
-                   VALUES ($ticket, '$descripcion', 'pendiente')";
-    mysqli_query($conexion, $sql_insert);
-}
-
-// === P2: Ubicación y tipo de reparación ===
-if ($proceso === "P2" && $accion === "Siguiente") {
-    $piso = mysqli_real_escape_string($conexion, $_POST["piso"] ?? '');
-    $tipo = mysqli_real_escape_string($conexion, $_POST["tipo_reparacion"] ?? '');
-
-    $sql_update = "UPDATE solicitudes 
-                   SET piso = '$piso', tipo_reparacion = '$tipo' 
-                   WHERE ticket = $ticket";
-    mysqli_query($conexion, $sql_update);
-}
-
-// === P3: Revisión por supervisor ===
-if ($proceso === "P3") {
-    if ($accion === "Aprobar") {
-        $siguiente = "P4"; // técnico
-    } elseif ($accion === "Rechazar") {
-        $siguiente = "P5"; // notificación al encargado
-        $sql_estado = "UPDATE solicitudes SET estado = 'rechazada' WHERE ticket = $ticket";
-        mysqli_query($conexion, $sql_estado);
-    } else {
-        die("Acción no válida en revisión del supervisor.");
+function validarRol($conexion, $flujo, $proceso, $usuario) {
+    $rol_usuario = getCampo($conexion, "SELECT rol FROM usuarios WHERE usuario = '$usuario'", "rol");
+    $rol_proceso = getCampo($conexion, "SELECT rol FROM flujoproceso WHERE flujo = '$flujo' AND proceso = '$proceso'", "rol");
+    if (!$rol_usuario || !$rol_proceso || $rol_usuario !== $rol_proceso) {
+        die("🚫 Acceso denegado: El proceso '$proceso' requiere el rol '$rol_proceso'.");
     }
 }
 
-// === P4: Ejecución por técnico ===
-if ($proceso === "P4" && $accion === "Siguiente") {
-    $observaciones = mysqli_real_escape_string($conexion, $_POST["observaciones"] ?? '');
+function siguienteProceso($conexion, $flujo, $proceso, $respuesta) {
+    $tipo = getCampo($conexion, "SELECT tipo FROM flujoproceso WHERE flujo = '$flujo' AND proceso = '$proceso'", "tipo");
+    if ($tipo === 'Q') {
+        $fila = mysqli_fetch_assoc(mysqli_query($conexion,
+            "SELECT si, no FROM flujoprocesopregunta WHERE flujo = '$flujo' AND proceso = '$proceso'"));
 
-    $sql_update = "UPDATE solicitudes 
-                   SET estado = 'ejecutado', observaciones = '$observaciones' 
-                   WHERE ticket = $ticket";
-    mysqli_query($conexion, $sql_update);
+        $respuesta = strtolower(trim($respuesta));
+        if ($respuesta == 'si'){
+            return $fila['si'];
+        }else{
+            return $fila['no'];
+        }
+    }
+    return getCampo($conexion, "SELECT siguiente FROM flujoproceso WHERE flujo = '$flujo' AND proceso = '$proceso'", "siguiente");
 }
 
-// === P5: Confirmación del rechazo ===
-// No requiere acción adicional, solo avanza a P6
+// Iniciar nuevo flujo
+if (isset($_GET['nuevo']) && $_GET['nuevo'] === 'si') {
+    $flujo = $_GET['flujo'] ?? 'F2';
+    $usuario = $_SESSION['usuario'];
+    $nrotramite = getCampo($conexion, "SELECT MAX(nrotramite) as maxtram FROM flujoseguimiento", "maxtram") + 1;
+    $fecha = date("Y-m-d H:i:s");
 
-// === P6: Finalización del proceso ===
-if ($proceso === "P6" && $accion === "Siguiente") {
-    $sql_finalizar = "UPDATE solicitudes SET estado = 'finalizado' WHERE ticket = $ticket";
-    mysqli_query($conexion, $sql_finalizar);
-
-    // Redirigir a la página de inicio
-    header("Location: index.php");
+    mysqli_query($conexion, "INSERT INTO flujoseguimiento (nrotramite, usuario, flujo, proceso, fecha_inicio) 
+                             VALUES ($nrotramite, '$usuario', '$flujo', 'P1', '$fecha')");
+    header("Location: inicial.php?flujo=$flujo&proceso=P1&nrotramite=$nrotramite");
     exit();
 }
 
-// Validar que haya un proceso siguiente
-if (empty($siguiente)) {
-    die("Error: No se definió el siguiente proceso.");
+// Procesar datos del flujo
+$flujo = $_POST["flujo"] ?? '';
+$proceso = $_POST["proceso"] ?? '';
+$nrotramite = intval($_POST["nrotramite"] ?? 0);
+$accion = $_POST["accion"] ?? '';
+$usuario = $_SESSION["usuario"];
+$fecha = date("Y-m-d H:i:s");
+
+if (!$flujo || !$proceso || !$nrotramite || !$usuario) die("Error: Datos incompletos.");
+validarRol($conexion, $flujo, $proceso, $usuario);
+
+// Cerrar proceso actual
+mysqli_query($conexion, "UPDATE flujoseguimiento SET fecha_fin = '$fecha'
+                         WHERE flujo = '$flujo' AND proceso = '$proceso' AND nrotramite = $nrotramite AND fecha_fin IS NULL");
+
+// === FLUJO DE MANTENIMIENTO (F2) ===
+if ($flujo === "F2") {
+    switch ($proceso) {
+        case "P1":
+            if ($accion === "Siguiente") {
+                $desc = mysqli_real_escape_string($conexion, $_POST["descripcion"] ?? '');
+                mysqli_query($conexion, "INSERT INTO solicitudes_mantenimiento (nrotramite, descripcion, estado)
+                                         VALUES ($nrotramite, '$desc', 'pendiente')");
+            }
+            break;
+        case "P2":
+            if ($accion === "Siguiente") {
+                $piso = mysqli_real_escape_string($conexion, $_POST["piso"] ?? '');
+                $tipo = mysqli_real_escape_string($conexion, $_POST["tipo_reparacion"] ?? '');
+                mysqli_query($conexion, "UPDATE solicitudes_mantenimiento SET piso = '$piso', tipo_reparacion = '$tipo'
+                                         WHERE nrotramite = $nrotramite");
+            }
+            break;
+        case "P3":
+            if ($accion === "Aprobar") {
+                $siguiente = "P4";
+            } elseif ($accion === "Rechazar") {
+                $siguiente = "P5";
+                mysqli_query($conexion, "UPDATE solicitudes_mantenimiento SET estado = 'rechazada'
+                                         WHERE nrotramite = $nrotramite");
+            } else die("Acción inválida en revisión.");
+            break;
+        case "P4":
+            if ($accion === "Siguiente") {
+                $obs = mysqli_real_escape_string($conexion, $_POST["observaciones"] ?? '');
+                mysqli_query($conexion, "UPDATE solicitudes_mantenimiento SET observaciones = '$obs', estado = 'ejecutado'
+                                         WHERE nrotramite = $nrotramite");
+            }
+            break;
+        case "P6":
+            if ($accion === "Siguiente") {
+                mysqli_query($conexion, "UPDATE solicitudes_mantenimiento SET estado = 'finalizado'
+                                         WHERE nrotramite = $nrotramite");
+                header("Location: index.php");
+                exit();
+            }
+            break;
+    }
 }
 
-// Obtener el rol del siguiente proceso
-$sql_rol_sig = "SELECT rol FROM flujoproceso WHERE flujo = '$flujo' AND proceso = '$siguiente'";
-$res_rol_sig = mysqli_query($conexion, $sql_rol_sig);
-$dato_sig = mysqli_fetch_assoc($res_rol_sig);
-$rol_siguiente = $dato_sig["rol"] ?? null;
+// === FLUJO DE VACACIONES (F3) ===
+if ($flujo === "F3") {
+    switch ($proceso) {
+        case "P1":
+            if ($accion === "Siguiente") {
+                $desde = mysqli_real_escape_string($conexion, $_POST["fecha_desde"] ?? '');
+                $hasta = mysqli_real_escape_string($conexion, $_POST["fecha_hasta"] ?? '');
+                $motivo = mysqli_real_escape_string($conexion, $_POST["motivo"] ?? '');
+                $existe = getCampo($conexion, "SELECT COUNT(*) as total FROM solicitudes_vacaciones WHERE nrotramite = $nrotramite", "total");
 
-if (!$rol_siguiente) {
-    die("Error: No se encontró rol para el proceso siguiente '$siguiente'.");
+                if ($existe == 0) {
+                    mysqli_query($conexion, "INSERT INTO solicitudes_vacaciones 
+                        (nrotramite, empleado_usuario, fecha_desde, fecha_hasta, motivo, estado)
+                        VALUES ($nrotramite, '$usuario', '$desde', '$hasta', '$motivo', 'pendiente')");
+                } else {
+                    mysqli_query($conexion, "UPDATE solicitudes_vacaciones 
+                        SET fecha_desde = '$desde', fecha_hasta = '$hasta', motivo = '$motivo'
+                        WHERE nrotramite = $nrotramite");
+                }
+            }
+            break;
+        case "P3":
+            $respuesta = $_POST["respuesta"] ?? '';
+            if ($respuesta === "si") {
+                mysqli_query($conexion, "UPDATE solicitudes_vacaciones SET estado = 'aprobada'
+                                         WHERE nrotramite = $nrotramite");
+                $siguiente = siguienteProceso($conexion, $flujo, $proceso, $respuesta);
+                $proceso = $siguiente;
+            } elseif ($respuesta === "no") {
+                mysqli_query($conexion, "UPDATE solicitudes_vacaciones SET estado = 'rechazada'
+                                         WHERE nrotramite = $nrotramite");
+                $siguiente = siguienteProceso($conexion, $flujo, $proceso, $respuesta);
+                $proceso = $siguiente;
+            } else die("Respuesta inválida.");
+            break;
+        case "P4":
+            if ($accion === "Siguiente") {
+                mysqli_query($conexion, "UPDATE solicitudes_vacaciones SET estado = 'registrada'
+                                         WHERE nrotramite = $nrotramite");
+            }
+            break;
+        case "P6":
+            if ($accion === "Siguiente") {
+                mysqli_query($conexion, "UPDATE solicitudes_vacaciones SET estado = 'finalizado'
+                                         WHERE nrotramite = $nrotramite");
+                header("Location: index.php");
+                exit();
+            }
+            break;
+    }
 }
 
-// Obtener un usuario con ese rol (puedes ajustar lógica si hay más de uno)
-$sql_user_sig = "SELECT usuario FROM usuarios WHERE rol = '$rol_siguiente' LIMIT 1";
-$res_user_sig = mysqli_query($conexion, $sql_user_sig);
-$dato_user_sig = mysqli_fetch_assoc($res_user_sig);
-$usuario_siguiente = $dato_user_sig["usuario"] ?? null;
-
-if (!$usuario_siguiente) {
-    die("Error: No hay usuario asignado con rol '$rol_siguiente'.");
+// === Determinar siguiente proceso ===
+if (!isset($siguiente)) {
+    $siguiente = siguienteProceso($conexion, $flujo, $proceso, $accion);
 }
 
-// Insertar nuevo paso del flujo con el usuario correcto
-$sql_insert_flujo = "INSERT INTO flujousuario 
-    (ticket, usuario, flujo, proceso, fechainicial, fechafinal)
-    VALUES ($ticket, '$usuario_siguiente', '$flujo', '$siguiente', '$fecha', NULL)";
-mysqli_query($conexion, $sql_insert_flujo);
+if (!$siguiente) die("Error: No se definió el siguiente proceso.");
 
+$rol_siguiente = getCampo($conexion, "SELECT rol FROM flujoproceso WHERE flujo = '$flujo' AND proceso = '$siguiente'", "rol");
+$usuario_siguiente = getCampo($conexion, "SELECT usuario FROM usuarios WHERE rol = '$rol_siguiente' LIMIT 1", "usuario");
 
-// Redirigir al siguiente proceso
-header("Location: inicial.php?flujo=$flujo&proceso=$siguiente&ticket=$ticket");
+if (!$usuario_siguiente) die("Error: No hay usuario con rol '$rol_siguiente'.");
+
+mysqli_query($conexion, "INSERT INTO flujoseguimiento 
+    (nrotramite, usuario, flujo, proceso, fecha_inicio)
+    VALUES ($nrotramite, '$usuario_siguiente', '$flujo', '$siguiente', '$fecha')");
+
+header("Location: inicial.php?flujo=$flujo&proceso=$siguiente&nrotramite=$nrotramite");
 exit();
+?>
